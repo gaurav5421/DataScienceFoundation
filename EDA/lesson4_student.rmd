@@ -1,0 +1,274 @@
+Lesson 4
+========================================================
+
+***
+
+### Scatterplots and Perceived Audience Size
+Notes:
+
+***
+
+### Scatterplots
+Notes:
+
+```{r Scatterplots}
+
+```
+
+***
+
+#### What are some things that you notice right away?
+Response:
+
+***
+
+### ggplot Syntax
+Notes:
+
+```{r ggplot Syntax}
+
+```
+
+***
+
+### Overplotting
+Notes:
+
+ggplot(aes(x = age, y = friend_count), data = pf) +  ## Scatterplot
+  geom_jitter(alpha = 1/20) +  
+  xlim(13,90)
+
+## Instead of using geom_point use geom_jitter to see the data more accuratley since it creates more noize
+
+#### What do you notice in the plot?
+Response:
+
+Age group between 13 and 25 has many more freinds than most of the other ages and we see a thin line except at 60 which is unusual
+
+### Coord_trans()
+Notes:
+
+
+  
+
+#### Look up the documentation for coord_trans() and add a layer to the plot that transforms friend_count using the square root function. Create your plot!
+
+  ggplot(aes(x = age, y = friend_count), data = pf) +  ## Scatterplot
+  geom_point(alpha = 1/20) +
+  xlim(13,90) +
+  coord_trans(y = 'sqrt')
+  
+#### What do you notice?
+
+***
+
+### Alpha and Jitter
+Notes:
+
+ggplot(aes(x = age, y = friendships_initiated), data = pf) +  ## Scatterplot
+  geom_point(alpha = 1/20 , position = position_jitter(h = 0)) +
+  scale_x_continuous(breaks = seq(10, 120, 10)) +
+  coord_trans(y = 'sqrt') 
+***
+
+### Overplotting and Domain Knowledge
+Notes:
+
+***
+
+### Conditional Means
+Notes:
+
+pf.fc_by_age <- pf %>% 
+  group_by(age) %>%
+  summarise(friend_count_mean  = mean(friend_count),
+            friend_count_median  = median(friend_count),
+            n = n()) %>% 
+  arrange(age)
+
+Create your plot!
+
+ggplot(aes(x = age, y = friend_count_mean), data = pf.fc_by_age) +  ## line Graph
+  geom_line() 
+
+***
+
+### Overlaying Summaries with Raw Data
+Notes:
+
+ggplot(aes(x = age, y = friend_count), data = pf) +  ## Overlaying summaries 
+  geom_point(alpha = 1/20, position = position_jitter(h = 0), color = 'orange') +
+  xlim(13,90) +
+  coord_trans(y = 'sqrt') +
+  geom_line(stat = 'summary', fun.y = mean)
+
+#### What are some of your observations of the plot?
+Response:
+
+***
+
+### Moira: Histogram Summary and Scatterplot
+See the Instructor Notes of this video to download Moira's paper on perceived audience size and to see the final plot.
+
+Notes:
+
+***
+
+### Correlation
+Notes:
+
+```{r Correlation}
+
+```
+
+Look up the documentation for the cor.test function.
+
+What's the correlation between age and friend count? Round to three decimal places.
+Response:
+
+***
+
+### Correlation on Subsets
+Notes:
+
+```{r Correlation on Subsets}
+with( subset(pf , age <=70) , cor.test(age, friend_count))
+```
+
+***
+
+### Correlation Methods
+Notes:
+
+***
+
+## Create Scatterplots
+Notes:
+
+```{r}
+
+```
+
+***
+
+### Strong Correlations
+Notes:
+
+```{r Strong Correlations}
+
+```
+
+What's the correlation betwen the two variables? Include the top 5% of values for the variable in the calculation and round to 3 decimal places.
+
+```{r Correlation Calcuation}
+
+```
+
+Response:
+
+***
+
+### Moira on Correlation
+Notes:
+
+***
+
+### More Caution with Correlation
+Notes:
+
+```{r More Caution With Correlation}
+install.packages('alr3')
+library(alr3)
+```
+
+Create your plot!
+
+```{r Temp vs Month}
+
+```
+
+***
+
+### Noisy Scatterplots
+a. Take a guess for the correlation coefficient for the scatterplot.
+
+b. What is the actual correlation of the two variables?
+(Round to the thousandths place)
+
+```{r Noisy Scatterplots}
+
+```
+
+***
+
+### Making Sense of Data
+Notes:
+
+```{r Making Sense of Data}
+
+```
+
+***
+
+### A New Perspective
+
+What do you notice?
+Response:
+
+Watch the solution video and check out the Instructor Notes!
+Notes:
+
+***
+
+### Understanding Noise: Age to Age Months
+Notes:
+
+```{r Understanding Noise: Age to Age Months}
+
+```
+
+***
+
+### Age with Months Means
+
+```{r Age with Months Means}
+
+```
+
+Programming Assignment
+```{r Programming Assignment}
+
+```
+
+***
+
+### Noise in Conditional Means
+
+```{r Noise in Conditional Means}
+
+```
+
+***
+
+### Smoothing Conditional Means
+Notes:
+
+```{r Smoothing Conditional Means}
+
+```
+
+***
+
+### Which Plot to Choose?
+Notes:
+
+***
+
+### Analyzing Two Variables
+Reflection:
+
+***
+
+Click **KnitHTML** to see all of your hard work and to have an html
+page of this lesson, your answers, and your notes!
+

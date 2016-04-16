@@ -1,37 +1,39 @@
 library(tidyr)
 library(dplyr)
 library(arules)
-library(RSQLite)
+library(arulesViz)
+library(dplyr)
 
+Amazon <- read.csv("C:/DataScienceFoundation/Datasets/Reviews.csv", header = TRUE, 
+                   col.names = c("ID","ProductId","UserId","HelpfulnessNumerator","HelpfulnessDenominator","Score",
+                                 "Time","Summary","Text"),
+                   colClasses = c("NULL","character","character","NULL","NULL","integer","NULL","NULL","NULL"))
 
-Amazon <- read.csv("C:/Data Science Foundation/EDA/Reviews.csv", header = TRUE, stringsAsFactors = FALSE , encoding = "UTF-8")
-# 
-# Amazon_full <- read.csv("C:/Data Science Foundation/EDA/Reviews_orig.csv", header = TRUE, stringsAsFactors = FALSE , encoding = "UTF-8")
-# 
+Amazon <- Amazon[,c("UserId","ProductId","Score")]
 
-Amazon_ID <- Amazon[,c("ProductId","UserId","Score")]
+Amazon <- Amazon[!duplicated(Amazon[1:2]),] ## To get unique values
 
-Amazon_ID$UserId <- factor(Amazon_ID$UserId)
+Amazon <- subset(Amazon, table(Amazon$UserId) > 1)
 
-Amazon_ID[!duplicated(Amazon_ID[1:2]),] ## To get unique values
-
-Amazon_ID_sample <- head(Amazon_ID,100)
-
-write.csv(Amazon_ID, file = "C:/Data Science Foundation/csvtest.csv" ,row.names = FALSE)
-
-rev_by_user <- split(x= Amazon_ID$ProductId, f = Amazon_ID$UserId)
+rev_by_user <- split(x= Amazon[,"ProductId"], f = Amazon$UserId)
 
 rev_by_user <- lapply(rev_by_user, unique)
 
 rev_by_user <- as(rev_by_user, "transactions")
 
-itemFrequencyPlot(rev_by_user, cex.names = 1.5)
+itemFrequencyPlot(rev_by_user, support = .08 ,cex.names = 0.8)
+
+rules <- apriori(rev_by_user,parameter = list(support =0.02, confidence = 0.6))
 
 
-con <- dbConnect(RSQLite::SQLite(), ":memory:")
 
-dbWriteTable(con, "Amazon", Amazon, row.names = FALSE)
-
-res <- dbSendQuery(con, "select UserId, ProductId, Score, ROW_NUMBER() over (Partition By UserId Order)")
-
-dbFetch(res)
+# for (i in 1:length(rev_by_user))
+# {
+#   if(length(rev_by_user[[i]]) > 1)
+#   {
+#     rev[i] <- rev_by_user[i]
+#   }
+#   
+# }
+# 
+# rev <- rev[! sapply(rev,is.null)] #to remove the nulls

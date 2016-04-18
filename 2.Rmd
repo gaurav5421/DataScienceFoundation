@@ -1,0 +1,94 @@
+---
+title: "EDA Project:Diamond Prices(Part 2)"
+author: "RStudio"
+date: "April 17, 2016"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+```{r libraries}
+library(ggplot2)
+library(dplyr)
+library(grid)
+library(gridExtra)
+```
+
+```{r Diamonds}
+
+data(diamonds)
+
+```
+
+
+## Plots
+
+
+```{r plots}
+
+ggplot(aes(x = price, y = x), data = diamonds) + 
+  geom_point() 
+
+ggplot(aes(x = price, y = depth), data = diamonds) +  ## Scatterplot
+  geom_point()
+
+ggplot(data = diamonds, aes(x = price, y = depth)) + 
+  geom_point(alpha= 1/100)
+
+ggplot(aes(x = price, y = x), data = diamonds) +  ## Scatterplot
+  geom_point(alpha = 1/20) +
+  xlim(326,7500) +
+  ylim(3,9) 
+
+ggplot(aes(x = price, y = depth), data = diamonds) +  ## Scatterplot
+  geom_point(alpha = 1/20) +
+  ylim(50,70)
+
+
+ggplot(aes(x = carat, y = price), data = diamonds[floor(1/100 * nrow(diamonds) + 1) :53940 , ] ) +  ## Scatterplot
+  geom_point()
+
+diamonds$volume <- (diamonds$x*diamonds$y*diamonds$z)
+
+
+ggplot(aes(x = volume, y = price), data = diamonds) +  ## Scatterplot
+  geom_jitter(alpha = 1/20) +
+  xlim(0,500) 
+
+diamonds_subset <- subset(diamonds , volume > 0 & volume <= 800)
+
+ggplot(aes(x = volume, y = price), data = diamonds_subset) +  ## Scatterplot
+  geom_point() +
+  geom_smooth(method = 'lm' , color = 'red')
+  
+diamondsByClarity <- diamonds %>% 
+  group_by(clarity) %>%
+  summarise(mean_price  = mean(price),
+            median_price  = median(price),
+            min_price  = min(price),
+            max_price = max(price),
+            n = n()) %>% 
+  arrange(clarity)
+
+
+
+diamonds_by_clarity <- group_by(diamonds, clarity)
+diamonds_mp_by_clarity <- summarise(diamonds_by_clarity, mean_price = mean(price))
+
+diamonds_by_color <- group_by(diamonds, color)
+diamonds_mp_by_color <- summarise(diamonds_by_color, mean_price = mean(price))
+
+p3 <- ggplot(aes(x = color, y = mean_price), data = diamonds_mp_by_color) +  ## Scatterplot
+  geom_bar(stat = "identity")
+
+p4 <- ggplot(aes(x = clarity, y = mean_price), data = diamonds_mp_by_clarity) +  ## Scatterplot
+  geom_bar(stat = "identity")
+
+grid.arrange(p3,p4)
+
+```
+
+
